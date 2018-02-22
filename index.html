@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div name='app' v-bind:class='{active:true,redmodel:judge}'>
+        {{message}}
+        <button v-on:click="btnclick">change</button>
+        <my-component></my-component>
+    </div>
+
+    <div id='appclass' v-bind:class='myclass'>
+        {{message}}
+        <button v-on:click='btnclick'>change</button>
+    </div>
+
+    <div id="ifApp">
+        <h1 v-if="result==0">未公布成绩</h1>
+        <h1 v-else-if="result < 60">{{result}}分 不及格</h1>
+        <h1 v-else-if="result < 80">{{result}}分 良好</h1>
+        <h1 v-else-if="result < 100">{{result}}分 优秀</h1>
+        <h1 v-else >{{result}}分 满分</h1>
+        <button  @click="btnclick">change</button>
+    </div>
+
+    <div id="vfor">
+        <ul>
+            <li v-for="(game,index) in games">{{index+1}}.{{game}}</li>
+        </ul>
+        <ol>
+            <li v-for="(value,key) in mygames">{{key}}.{{value}} </li>
+        </ol>
+    </div>
+
+    <div id="component">
+        <today-weather></today-weather>
+    </div>
+
+    <div id='hello'>明天的天气:<tomorrow-weather></tomorrow-weather></div>
+
+    <div id="comData">
+        <test-result v-bind:score='80'></test-result>
+    </div>
+</body>
+<script>
+    Vue.component(
+        'test-result',
+        {
+            props:['score'],
+            template:'<div>{{testResult}}</div>',
+            computed:{
+                testResult:function(){
+                    var strResult=this.score-60
+                    return strResult
+                }
+            }
+        }
+    )
+    new Vue({
+        el:'#comData'
+    })
+    Vue.component(
+        'tomorrow-weather',
+        {
+            template:'<strong>{{tomorrow2}}</strong>',
+            data:function(){return {tomorrow2:'雨夹雪'}}
+        }
+
+    )
+    new Vue({
+        el:'#hello'
+    })
+
+    var mycomponent={
+        template:'<div>今天没有下雨</div>'
+    }
+    Vue.component(
+        'today-weather',
+        {template:'<div>今天多云</div>'}
+        )
+    new Vue({
+        el:'#component',
+    })
+    new Vue({
+        el:'#vfor',
+        data:{
+            games:[
+                '勇者','斗','恶龙'
+            ],
+            mygames:{
+                'title':'马里奥',
+                'price':400
+            }
+        }
+    })
+    new Vue({
+        el:'#ifApp',
+        data:{result:0},
+        methods:{
+            btnclick:function(event){
+                console.log(event)
+                this.result=Math.round(Math.random()*100)
+            }
+        }
+    })
+    new Vue({
+        el:'#appclass',
+        data:{
+            message:'hello',
+            myclass:{
+                active:true,
+                redmodel:false
+            }
+        },
+        methods:{
+            btnclick:function(){
+                console.log(this._data.myclass.redmodel)
+                this.myclass.redmodel=!this.myclass.redmodel
+            }
+        }
+    })
+    new Vue({
+        el:'div[name="app"]',
+        data:{
+            message:'nihao',
+            judge:false
+        },
+        methods:{
+            btnclick:function(){
+                this.judge=!this.judge
+            }
+        },
+        filters:{
+            toupper:function(){return}
+        },
+        conmputed:{
+            inc:function(){return},
+            reduse:{
+                get:function(){
+                    return 
+                },
+                set:function(val){
+                    this.price=val
+                    }
+            }
+        },
+        watch:{
+            message:function(newVal,oldVal){}
+        },
+        components:{
+            'my-component':mycomponent
+        }
+    })
+</script>
+</html>

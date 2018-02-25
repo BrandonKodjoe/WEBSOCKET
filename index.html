@@ -10,7 +10,7 @@
 </head>
 <body>
     <div name='app' v-bind:class='{active:true,redmodel:judge}'>
-        {{message}}
+        {{inc}}
         <button v-on:click="btnclick">change</button>
         <my-component></my-component>
     </div>
@@ -45,10 +45,77 @@
     <div id='hello'>明天的天气:<tomorrow-weather></tomorrow-weather></div>
 
     <div id="comData">
-        <test-result v-bind:score='80'></test-result>
+        <test-result v-bind:score='80'>分数</test-result>
+    </div>
+    <div id="hellomike">
+        <test-hello v-bind:pname='realname'></test-hello>
+    </div>
+    <div id="testemit">
+        <add-event v-bind:a='2' v-bind:b='5' v-on:addevent='addResult'>
+            <span slot='cc'>槽</span>
+        </add-event>
+        父组件{{result}}
     </div>
 </body>
 <script>
+
+    Vue.component('add-event',{
+        props:['a','b'],
+        template:'<div><button v-on:click="add">加</button>{{a}}+{{b}}<slot name="cc"></slot></div>',
+        methods:{
+            add:function(){
+                var value=0;
+                value=this.a+this.b
+                this.$emit('addevent',{val:value})
+                return value
+            }
+        }
+    })
+    new Vue({
+        el:'#testemit',
+        data:{
+            result:0
+        },
+        methods:{
+            addResult:function(pval){
+                console.log(pval)
+                this.result=pval.val      
+            }
+        }
+    })
+
+    Vue.component('test-byby',{
+        props:{
+            name:{
+                type:String,
+                required:true
+            },
+            age:{
+                type:Number,
+                validator:function(val){
+                    return val>10;
+                }
+            },
+            detail:{
+                type:Object,
+                default:function(){
+                    return {address:'us',language:'English'}
+                }
+            }
+        },
+        template:'<div></div>'
+    })
+
+    Vue.component('test-hello',{
+        template:'<div>{{comname}}{{pname}}</div>',
+        props:['pname'],
+        data:function(){return {comname:'xiaoming'}}
+
+        })
+    new Vue({
+        el:'#hellomike',
+        data:{realname:'xiaohong'}
+    })
     Vue.component(
         'test-result',
         {
@@ -78,7 +145,7 @@
     })
 
     var mycomponent={
-        template:'<div>今天没有下雨</div>'
+        template:'<div>今天天气</div>'
     }
     Vue.component(
         'today-weather',
@@ -91,10 +158,10 @@
         el:'#vfor',
         data:{
             games:[
-                '勇者','斗','恶龙'
+                '审核','填报','修改'
             ],
             mygames:{
-                'title':'马里奥',
+                'title':'元芳',
                 'price':400
             }
         }
@@ -134,13 +201,15 @@
         methods:{
             btnclick:function(){
                 this.judge=!this.judge
-            }
+                return 2
+            },
+            methodtest:function(){return this.message}
         },
         filters:{
             toupper:function(){return}
         },
-        conmputed:{
-            inc:function(){return},
+        computed:{
+            inc:function(){return 1},
             reduse:{
                 get:function(){
                     return 
